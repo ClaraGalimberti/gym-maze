@@ -80,35 +80,29 @@ if __name__ == "__main__":
     env.reset()
     env.render()
     i = 0
+    done = False
     total_reward = 0
     print("Starting game...")
     while i < MAX_T:
-        action = 4
-        while action == 4:
-            try:
-                ch = getch()
-            except:
-                ch = input()
-            else:
-                ch = input()
-            action = translate_action(ch)
+        while True:
+            action = env.maze_view.get_input_key()
+            if action is not None:
+                break
+
         print("Your action is: %s \t||\t The current reward is: %.4f" % (action, total_reward))
-        if action == 'close':
-            break
-        elif action == 'solution':
+        if action == 'solution':
             env.render(mode='solution')
             time.sleep(2)
             break
-        else:  # execute the action
+        if env.valid_action(action):  # execute the action
             obv, reward, done, _ = env.step(action)
             total_reward += reward
             env.render()
             i = i+1
 
         if env.is_game_over():
-            print("Game over!")
+            print("Game over! \nBye :)")
             break
-            # sys.exit()
 
         if done:
             print("Finished after %f time steps with total reward = %.4f."
