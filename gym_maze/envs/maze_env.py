@@ -118,6 +118,12 @@ class MazeEnv(gym.Env):
 
         return self.maze_view.update(mode)
 
+    def valid_action(self, action):
+        for act in self.ACTION:
+            if act == action:
+                return True
+        return False
+
 
 class MazeEnvSample5x5(MazeEnv):
 
