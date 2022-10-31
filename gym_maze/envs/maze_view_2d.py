@@ -119,6 +119,30 @@ class MazeView2D:
         self.__robot = np.zeros(2, dtype=int)
         self.__draw_robot(transparency=255)
 
+    def get_input_key(self):
+        action = None
+        if self.__game_over:
+            action = 'game_over'
+            return action
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or event.type == 32787:
+                    self.__game_over = True
+                    self.quit_game()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        action = 'W'
+                    elif event.key == pygame.K_RIGHT:
+                        action = 'E'
+                    elif event.key == pygame.K_UP:
+                        action = 'N'
+                    elif event.key == pygame.K_DOWN:
+                        action = 'S'
+                    elif event.key == pygame.K_o:
+                        action = 'solution'
+                return action
+
+
     def __controller_update(self):
         if not self.__game_over:
             for event in pygame.event.get():
@@ -633,7 +657,8 @@ if __name__ == "__main__":
 
     # maze = MazeView2D(screen_size= (500, 500), maze_size=(10,10))
     maze = MazeView2D(screen_size=(500, 500), maze_size=(5, 5))
-    maze.update()
+    while(True):
+        maze.update()
     # input("Enter any key to quit.")
 
 
