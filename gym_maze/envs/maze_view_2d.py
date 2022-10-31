@@ -90,8 +90,8 @@ class MazeView2D:
     def quit_game(self):
         try:
             self.__game_over = True
-            if self.__enable_render is True:
-                pygame.display.quit()
+            # if self.__enable_render is True:
+            #     pygame.display.quit()
             pygame.quit()
         except Exception:
             pass

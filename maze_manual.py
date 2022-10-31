@@ -94,18 +94,21 @@ if __name__ == "__main__":
             action = translate_action(ch)
         print("Your action is: %s \t||\t The current reward is: %.4f" % (action, total_reward))
         if action == 'close':
-            sys.exit()
-        if action == 'solution':
+            break
+        elif action == 'solution':
             env.render(mode='solution')
-            time.sleep(1)
-            sys.exit()
-        # execute the action
-        obv, reward, done, _ = env.step(action)
-        total_reward += reward
-        env.render()
-        i = i+1
+            time.sleep(2)
+            break
+        else:  # execute the action
+            obv, reward, done, _ = env.step(action)
+            total_reward += reward
+            env.render()
+            i = i+1
+
         if env.is_game_over():
-            sys.exit()
+            print("Game over!")
+            break
+            # sys.exit()
 
         if done:
             print("Finished after %f time steps with total reward = %.4f."
@@ -114,10 +117,9 @@ if __name__ == "__main__":
             obv = env.reset()
             env.render()
 
-        elif i >= MAX_T - 1:
-            print("Timed out at %d with total reward = %f."
-                  % (i, total_reward))
+    else:
+        print("Timed out at %d with total reward = %f." % (i, total_reward))
 
-    print("Time out!")
     print("Closing game...")
-    sys.exit()
+    # env.maze_view.quit_game()
+    # env.close()
