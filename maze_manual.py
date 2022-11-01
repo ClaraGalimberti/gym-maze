@@ -8,65 +8,6 @@ import gym
 import gym_maze
 
 
-def translate_action(action):
-    if action == 'w':
-        a = 'N'
-    elif action == 's':
-        a = 'S'
-    elif action == 'a':
-        a = 'W'
-    elif action == 'd':
-        a = 'E'
-    elif action == 'p':
-        a = 'close'
-    elif action == 'o':
-        a = 'solution'
-    else:
-        a = 4
-    return a
-
-
-class _Getch:
-    """Gets a single character from standard input.  Does not echo to the
-screen."""
-    def __init__(self):
-        try:
-            self.impl = _GetchUnix()
-            # self.impl = _GetchWindows()
-        except ImportError:
-            self.impl = _GetchUnix()
-
-    def __call__(self): return self.impl()
-
-
-class _GetchUnix:
-    def __init__(self):
-        import tty, sys
-
-    def __call__(self):
-        import sys, tty, termios
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
-
-
-# class _GetchWindows:
-#     def __init__(self):
-#         import msvcrt
-#
-#     def __call__(self):
-#         import msvcrt
-#         return msvcrt.getch()
-
-
-getch = _Getch()
-
-
 if __name__ == "__main__":
 
     # Initialize the "maze" environment
@@ -77,10 +18,9 @@ if __name__ == "__main__":
 
     print("Maze size: %d %d -- Max t: %d" % (MAZE_SIZE[0], MAZE_SIZE[1], MAX_T))
 
-    env.reset()
+    obv, done = env.reset()
     env.render()
     i = 0
-    done = False
     total_reward = 0
     print("Starting game...")
     while i < MAX_T:
@@ -89,7 +29,6 @@ if __name__ == "__main__":
             if action is not None:
                 break
 
-        print("Your action is: %s \t||\t The current reward is: %.4f" % (action, total_reward))
         if action == 'solution':
             env.render(mode='solution')
             time.sleep(2)
@@ -108,12 +47,12 @@ if __name__ == "__main__":
             print("Finished after %f time steps with total reward = %.4f."
                   % (i, total_reward))
             # Reset the environment
-            obv = env.reset()
+            obv, done = env.reset()
             env.render()
+
+        print("Your action is: %s \t||\t The current reward is: %.4f" % (action, total_reward))
 
     else:
         print("Timed out at %d with total reward = %f." % (i, total_reward))
 
     print("Closing game...")
-    # env.maze_view.quit_game()
-    # env.close()
