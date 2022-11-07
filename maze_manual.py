@@ -30,6 +30,7 @@ if __name__ == "__main__":
                 break
 
         if action == 'solution':
+            print("Maze with walls...")
             env.render(mode='solution')
             time.sleep(2)
             break
@@ -50,7 +51,7 @@ if __name__ == "__main__":
             obv, done = env.reset()
             env.render()
 
-        print("Your action is: %s \t||\t The current reward is: %.4f" % (action, total_reward))
+        print("Action: %s \t||\t Reward: %.4f" % (action, total_reward))
 
     else:
         print("Timed out at %d with total reward = %f." % (i, total_reward))

@@ -59,6 +59,12 @@ class MazeEnv(gym.Env):
         # Just need to initialize the relevant attributes
         self.configure()
 
+        # Value function container
+        self.value_f = np.empty(self.maze_size)
+        self.value_f[:] = np.nan
+        self.value_f_tmp = np.empty(self.maze_size)
+        self.value_f_tmp[:] = np.nan
+
     def __del__(self):
         if self.enable_render is True:
             self.maze_view.quit_game()
@@ -71,14 +77,17 @@ class MazeEnv(gym.Env):
         return [seed]
 
     def step(self, action):
-        if isinstance(action, int):
-            self.maze_view.move_robot(self.ACTION[action])
-        else:
-            self.maze_view.move_robot(action)
+        self.maze_view.move_robot(action)
+
+        self.state = self.maze_view.robot
+        # Clara: saving the values to add to the values function
+        num_step = np.nanmax(self.value_f_tmp) + 1
+        self.value_f_tmp[self.state[0], self.state[1]] = num_step
 
         if np.array_equal(self.maze_view.robot, self.maze_view.goal):
             reward = 1
             done = True
+            self.migrate_value_function()
         else:
             reward = -0.1/(self.maze_size[0]*self.maze_size[1])
             done = False
@@ -96,15 +105,16 @@ class MazeEnv(gym.Env):
         elif action == 'S' and self.maze_view.maze.color_lines_hor[y+1, x] != 0:
             self.maze_view.maze.color_lines_hor[y+1, x] += inc
 
-        self.state = self.maze_view.robot
-
         info = {}
 
         return self.state, reward, done, info
 
     def reset(self):
         self.maze_view.reset_robot()
-        self.state = np.zeros(2)
+        self.state = np.zeros(2, dtype=int)
+        self.value_f_tmp = np.empty(self.maze_size)
+        self.value_f_tmp[:] = np.nan
+        self.value_f_tmp[self.state[0], self.state[1]] = 0
         self.steps_beyond_done = None
         done = False
         return self.state, done
@@ -123,6 +133,12 @@ class MazeEnv(gym.Env):
             if act == action:
                 return True
         return False
+
+    def migrate_value_function(self):
+        num_step = np.nanmax(self.value_f_tmp)
+        self.value_f_tmp = self.value_f_tmp - num_step + 100
+        self.value_f = np.fmin(self.value_f_tmp, self.value_f)
+        print(self.value_f.transpose())
 
 
 class MazeEnvSample5x5(MazeEnv):
