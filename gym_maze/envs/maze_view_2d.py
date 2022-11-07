@@ -16,7 +16,7 @@ class MazeView2D:
         self.clock = pygame.time.Clock()
         self.__game_over = False
         self.__enable_render = enable_render
-        self.__my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.__my_font = pygame.font.SysFont('Comic Sans MS', 24)
 
         # Load a maze
         if maze_file_path is None:
@@ -119,6 +119,9 @@ class MazeView2D:
         self.__robot = np.zeros(2, dtype=int)
         self.__draw_robot(transparency=255)
 
+    def reset_values_f(self):
+        self.text_surface = {}
+
     def get_input_key(self):
         action = None
         if self.__game_over:
@@ -140,8 +143,18 @@ class MazeView2D:
                         action = 'S'
                     elif event.key == pygame.K_o:
                         action = 'solution'
+                    elif event.key == pygame.K_RETURN:
+                        action = 'enter'
                 return action
 
+    def show_value_function(self, value_f):
+        for i in range(value_f.shape[0]):
+            for j in range(value_f.shape[1]):
+                v = value_f[j,i]
+                if np.isnan(v):
+                    continue
+                v = ('%i' % v)
+                self.text_surface[(j*self.CELL_H + 50, i*self.CELL_W + 50)] = self.__my_font.render(v, False, (20, 20, 20))
 
     def __controller_update(self):
         if not self.__game_over:
@@ -158,7 +171,7 @@ class MazeView2D:
             self.__draw_goal()
             self.__draw_portals()
             self.__draw_robot()
-            self.__draw_text()
+            # self.__draw_text()
 
             if mode == 'solution':
                 self.__draw_maze()
@@ -261,6 +274,8 @@ class MazeView2D:
     def __draw_text(self, colour=(0, 0, 150), transparency=235):
         # Clara: Text to show
         self.text_surface[(50, 50)] = self.__my_font.render('Some Text', False, (0, 0, 0))
+        self.text_surface[(self.CELL_H+50, self.CELL_W+50)] = self.__my_font.render('Hola', False, (0, 0, 0))
+        self.text_surface[(2*self.CELL_H+50, 2*self.CELL_W+50)] = self.__my_font.render('Chau', False, (0, 0, 0))
         self.text_surface[(250, 150)] = self.__my_font.render('test', False, (0, 0, 0))
 
     def __draw_entrance(self, colour=(0, 0, 150), transparency=235):

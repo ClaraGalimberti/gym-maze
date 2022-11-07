@@ -88,6 +88,8 @@ class MazeEnv(gym.Env):
             reward = 1
             done = True
             self.migrate_value_function()
+            self.maze_view.show_value_function(self.value_f)
+            self.render()
         else:
             reward = -0.1/(self.maze_size[0]*self.maze_size[1])
             done = False
@@ -111,6 +113,7 @@ class MazeEnv(gym.Env):
 
     def reset(self):
         self.maze_view.reset_robot()
+        self.maze_view.reset_values_f()
         self.state = np.zeros(2, dtype=int)
         self.value_f_tmp = np.empty(self.maze_size)
         self.value_f_tmp[:] = np.nan
@@ -138,7 +141,6 @@ class MazeEnv(gym.Env):
         num_step = np.nanmax(self.value_f_tmp)
         self.value_f_tmp = self.value_f_tmp - num_step + 100
         self.value_f = np.fmin(self.value_f_tmp, self.value_f)
-        print(self.value_f.transpose())
 
 
 class MazeEnvSample5x5(MazeEnv):

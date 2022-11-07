@@ -37,21 +37,21 @@ if __name__ == "__main__":
         if env.valid_action(action):  # execute the action
             obv, reward, done, _ = env.step(action)
             total_reward += reward
+            print("Action: %s \t||\t Reward: %.4f" % (action, total_reward))
             env.render()
             i = i+1
+            if done:
+                print("Finished after %f time steps with total reward = %.4f." % (i, total_reward))
+                print("Press enter to continue...")
 
         if env.is_game_over():
             print("Game over! \nBye :)")
             break
 
-        if done:
-            print("Finished after %f time steps with total reward = %.4f."
-                  % (i, total_reward))
+        if done and action == 'enter':
             # Reset the environment
             obv, done = env.reset()
             env.render()
-
-        print("Action: %s \t||\t Reward: %.4f" % (action, total_reward))
 
     else:
         print("Timed out at %d with total reward = %f." % (i, total_reward))
