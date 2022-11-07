@@ -16,7 +16,7 @@ class MazeView2D:
         self.clock = pygame.time.Clock()
         self.__game_over = False
         self.__enable_render = enable_render
-        self.__my_font = pygame.font.SysFont('Comic Sans MS', 24)
+        self.__my_font = pygame.font.SysFont('Monaco', 24)
 
         # Load a maze
         if maze_file_path is None:
@@ -153,8 +153,12 @@ class MazeView2D:
                 v = value_f[j,i]
                 if np.isnan(v):
                     continue
+                v_min = np.nanmin(value_f)
+                v_max = np.nanmax(value_f)
+                c = 255 - (v-v_min)/(v_max-v_min) * 255
+                c = min(max(0, c), 254)
                 v = ('%i' % v)
-                self.text_surface[(j*self.CELL_H + 50, i*self.CELL_W + 50)] = self.__my_font.render(v, False, (20, 20, 20))
+                self.text_surface[(j*self.CELL_H + 50, i*self.CELL_W + 50)] = self.__my_font.render(v, False, (c, c, c))
 
     def __controller_update(self):
         if not self.__game_over:
