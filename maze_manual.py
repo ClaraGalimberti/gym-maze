@@ -34,11 +34,11 @@ if __name__ == "__main__":
             env.render(mode='solution')
             time.sleep(2)
             break
-        if env.valid_action(action):  # execute the action
+        if not done and env.valid_action(action):  # execute the action
             obv, reward, done, _ = env.step(action)
             total_reward += reward
             print("Action: %s \t||\t Reward: %.4f" % (action, total_reward))
-            env.render()
+            env.render(cost=total_reward)
             i = i+1
             if done:
                 print("Finished after %f time steps with total reward = %.4f." % (i, total_reward))
@@ -51,6 +51,7 @@ if __name__ == "__main__":
         if done and action == 'enter':
             # Reset the environment
             obv, done = env.reset()
+            total_reward = 0
             env.render()
 
     else:

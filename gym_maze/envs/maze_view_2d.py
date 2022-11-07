@@ -34,7 +34,8 @@ class MazeView2D:
         self.maze_size = self.__maze.maze_size
         if self.__enable_render is True:
             # to show the right and bottom border
-            self.screen = pygame.display.set_mode(screen_size)
+            self.screen = pygame.display.set_mode(tuple(map(sum, zip(screen_size, (0, 40)))))
+            # (0, 40): to add text on the bottom
             self.__screen_size = tuple(map(sum, zip(screen_size, (-1, -1))))
 
         # Set the starting point
@@ -76,9 +77,9 @@ class MazeView2D:
             # show the goal
             self.__draw_goal()
 
-    def update(self, mode="human"):
+    def update(self, mode="human", cost=None):
         try:
-            img_output = self.__view_update(mode)
+            img_output = self.__view_update(mode, cost)
             self.__controller_update()
         except Exception as e:
             self.__game_over = True
@@ -167,7 +168,7 @@ class MazeView2D:
                     self.__game_over = True
                     self.quit_game()
 
-    def __view_update(self, mode="human"):
+    def __view_update(self, mode="human", cost=None):
         if not self.__game_over:
             # update the robot's position
             self.__draw_maze2()
@@ -175,7 +176,8 @@ class MazeView2D:
             self.__draw_goal()
             self.__draw_portals()
             self.__draw_robot()
-            # self.__draw_text()
+            if cost is not None:
+                self.__draw_text(cost)
 
             if mode == 'solution':
                 self.__draw_maze()
@@ -275,12 +277,10 @@ class MazeView2D:
 
         pygame.draw.circle(self.maze_layer, colour + (transparency,), (x, y), r)
 
-    def __draw_text(self, colour=(0, 0, 150), transparency=235):
+    def __draw_text(self, cost, colour=(0, 0, 150), transparency=235):
         # Clara: Text to show
-        self.text_surface[(50, 50)] = self.__my_font.render('Some Text', False, (0, 0, 0))
-        self.text_surface[(self.CELL_H+50, self.CELL_W+50)] = self.__my_font.render('Hola', False, (0, 0, 0))
-        self.text_surface[(2*self.CELL_H+50, 2*self.CELL_W+50)] = self.__my_font.render('Chau', False, (0, 0, 0))
-        self.text_surface[(250, 150)] = self.__my_font.render('test', False, (0, 0, 0))
+        text = ('Reward: %i' % cost)
+        self.text_surface[(20, 645)] = self.__my_font.render(text, False, (0, 0, 0))
 
     def __draw_entrance(self, colour=(0, 0, 150), transparency=235):
 

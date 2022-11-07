@@ -39,6 +39,7 @@ class MazeEnv(gym.Env):
             raise AttributeError("One must supply either a maze_file path (str) or the maze_size (tuple of length 2)")
 
         self.maze_size = self.maze_view.maze_size
+        self.done_reward = 4 * self.maze_size[0] * self.maze_size[1]
 
         # forward or backward in each dimension
         self.action_space = spaces.Discrete(2*len(self.maze_size))
@@ -85,13 +86,12 @@ class MazeEnv(gym.Env):
         self.value_f_tmp[self.state[0], self.state[1]] = num_step
 
         if np.array_equal(self.maze_view.robot, self.maze_view.goal):
-            reward = 1
+            reward = self.done_reward
             done = True
             self.migrate_value_function()
             self.maze_view.show_value_function(self.value_f)
-            self.render()
         else:
-            reward = -0.1/(self.maze_size[0]*self.maze_size[1])
+            reward = -1  # -0.1/(self.maze_size[0]*self.maze_size[1])
             done = False
 
         # Clara: Change color of wall
@@ -125,11 +125,11 @@ class MazeEnv(gym.Env):
     def is_game_over(self):
         return self.maze_view.game_over
 
-    def render(self, mode="human", close=False):
+    def render(self, mode="human", close=False, cost=None):
         if close:
             self.maze_view.quit_game()
 
-        return self.maze_view.update(mode)
+        return self.maze_view.update(mode, cost)
 
     def valid_action(self, action):
         for act in self.ACTION:
@@ -139,7 +139,7 @@ class MazeEnv(gym.Env):
 
     def migrate_value_function(self):
         num_step = np.nanmax(self.value_f_tmp)
-        self.value_f_tmp = self.value_f_tmp - num_step + 100
+        self.value_f_tmp = self.value_f_tmp - num_step + self.done_reward
         self.value_f = np.fmin(self.value_f_tmp, self.value_f)
 
 
