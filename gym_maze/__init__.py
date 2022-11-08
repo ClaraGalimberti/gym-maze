@@ -45,7 +45,6 @@ register(
     max_episode_steps=1000,
     nondeterministic=True,
 )
-# Loop
 
 register(
     id='maze-random-3x3-loop-v0',
@@ -81,7 +80,7 @@ register(
     max_episode_steps=40000,
     nondeterministic=True,
 )
-# Plus
+
 register(
     id='maze-random-3x3-plus-v0',
     entry_point='gym_maze.envs:MazeEnvRandom3x3Plus',
