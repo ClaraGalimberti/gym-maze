@@ -152,6 +152,12 @@ class MazeEnvSample5x5(MazeEnv):
         super(MazeEnvSample5x5, self).__init__(maze_file="maze2d_5x5.npy", enable_render=enable_render)
 
 
+class MazeEnvSample5x5loop(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvSample5x5loop, self).__init__(maze_file="maze2d_5x5loop.npy", enable_render=enable_render)
+
+
 class MazeEnvRandom5x5(MazeEnv):
 
     def __init__(self, enable_render=True):
