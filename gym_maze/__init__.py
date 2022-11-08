@@ -14,7 +14,7 @@ register(
 )
 
 register(
-    id='maze-sample-5x5-loop',
+    id='maze-sample-5x5-v1',
     entry_point='gym_maze.envs:MazeEnvSample5x5loop',
     max_episode_steps=2000,
 )

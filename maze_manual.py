@@ -11,7 +11,7 @@ import gym_maze
 if __name__ == "__main__":
 
     # Initialize the "maze" environment
-    env = gym.make("maze-sample-5x5-loop")
+    env = gym.make("maze-sample-5x5-v1")
     # env = gym.make("maze-random-5x5-v0")
     # env = gym.make("maze-random-5x5-loop-v0")
 
