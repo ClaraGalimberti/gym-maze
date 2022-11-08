@@ -45,7 +45,43 @@ register(
     max_episode_steps=1000,
     nondeterministic=True,
 )
+# Loop
 
+register(
+    id='maze-random-3x3-loop-v0',
+    entry_point='gym_maze.envs:MazeEnvRandom3x3Loop',
+    max_episode_steps=1000,
+    nondeterministic=True,
+)
+
+register(
+    id='maze-random-5x5-loop-v0',
+    entry_point='gym_maze.envs:MazeEnvRandom5x5Loop',
+    max_episode_steps=2000,
+    nondeterministic=True,
+)
+
+register(
+    id='maze-random-10x10-loop-v0',
+    entry_point='gym_maze.envs:MazeEnvRandom10x10Loop',
+    max_episode_steps=10000,
+    nondeterministic=True,
+)
+
+register(
+    id='maze-random-20x20-loop-v0',
+    entry_point='gym_maze.envs:MazeEnvRandom20x20Loop',
+    max_episode_steps=20000,
+    nondeterministic=True,
+)
+
+register(
+    id='maze-random-30x30-loop-v0',
+    entry_point='gym_maze.envs:MazeEnvRandom30x30Loop',
+    max_episode_steps=40000,
+    nondeterministic=True,
+)
+# Plus
 register(
     id='maze-random-3x3-plus-v0',
     entry_point='gym_maze.envs:MazeEnvRandom3x3Plus',
