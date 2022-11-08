@@ -140,7 +140,7 @@ class MazeEnv(gym.Env):
     def migrate_value_function(self):
         num_step = np.nanmax(self.value_f_tmp)
         self.value_f_tmp = self.value_f_tmp - num_step + self.done_reward
-        self.value_f = np.fmin(self.value_f_tmp, self.value_f)
+        self.value_f = np.fmax(self.value_f_tmp, self.value_f)
 
 
 class MazeEnvSample5x5(MazeEnv):
