@@ -24,7 +24,10 @@ class MazeEnv(gym.Env):
                                         screen_size=(640, 640), 
                                         enable_render=enable_render)
         elif maze_size:
-            if mode == "plus":
+            if mode == "loop":
+                has_loops = True
+                num_portals = 0
+            elif mode == "plus":
                 has_loops = True
                 num_portals = int(round(min(maze_size)/3))
             else:
@@ -189,6 +192,47 @@ class MazeEnvRandom100x100(MazeEnv):
 
     def __init__(self, enable_render=True):
         super(MazeEnvRandom100x100, self).__init__(maze_size=(100, 100), enable_render=enable_render)
+
+
+class MazeEnvRandom3x3Loop(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom3x3Loop, self).__init__(maze_size=(3, 3), mode="loop", enable_render=enable_render)
+
+
+class MazeEnvRandom5x5Loop(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5Loop, self).__init__(maze_size=(5, 5), mode="loop", enable_render=enable_render)
+
+
+class MazeEnvRandom10x10Loop(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom10x10Loop, self).__init__(maze_size=(10, 10), mode="loop", enable_render=enable_render)
+
+
+class MazeEnvRandom20x20Loop(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom20x20Loop, self).__init__(maze_size=(20, 20), mode="loop", enable_render=enable_render)
+
+
+class MazeEnvRandom30x30Loop(MazeEnv):
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom30x30Loop, self).__init__(maze_size=(30, 30), mode="loop", enable_render=enable_render)
+
+
+class MazeEnvRandom3x3Plus(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom3x3Plus, self).__init__(maze_size=(3, 3), mode="plus", enable_render=enable_render)
+
+
+class MazeEnvRandom5x5Plus(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5Plus, self).__init__(maze_size=(5, 5), mode="plus", enable_render=enable_render)
 
 
 class MazeEnvRandom10x10Plus(MazeEnv):
