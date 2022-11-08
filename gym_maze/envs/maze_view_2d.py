@@ -159,7 +159,8 @@ class MazeView2D:
                 c = 255 - (v-v_min)/(v_max-v_min) * 255
                 c = min(max(0, c), 254)
                 v = ('%i' % v)
-                self.text_surface[(j*self.CELL_H + 50, i*self.CELL_W + 50)] = self.__my_font.render(v, False, (c, c, c))
+                d = 639/self.maze_size[0]/2-14
+                self.text_surface[(j*self.CELL_H + d, i*self.CELL_W + d)] = self.__my_font.render(v, False, (c, c, c))
 
     def __controller_update(self):
         if not self.__game_over:
