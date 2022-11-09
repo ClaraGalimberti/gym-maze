@@ -81,6 +81,19 @@ class MazeEnv(gym.Env):
         return [seed]
 
     def step(self, action):
+        # Clara: Change color of wall
+        # self.maze_view.maze.color_lines_hor
+        x, y = self.maze_view.robot
+        inc = 10
+        if action == 'W' and self.maze_view.maze.color_lines_ver[y, x] != 0:
+            self.maze_view.maze.color_lines_ver[y, x] += inc
+        elif action == 'E' and self.maze_view.maze.color_lines_ver[y, x + 1] != 0:
+            self.maze_view.maze.color_lines_ver[y, x + 1] += inc
+        elif action == 'N' and self.maze_view.maze.color_lines_hor[y, x] != 0:
+            self.maze_view.maze.color_lines_hor[y, x] += inc
+        elif action == 'S' and self.maze_view.maze.color_lines_hor[y + 1, x] != 0:
+            self.maze_view.maze.color_lines_hor[y + 1, x] += inc
+
         self.maze_view.move_robot(action)
 
         self.state = self.maze_view.robot
@@ -96,19 +109,6 @@ class MazeEnv(gym.Env):
         else:
             reward = -1  # -0.1/(self.maze_size[0]*self.maze_size[1])
             done = False
-
-        # Clara: Change color of wall
-        # self.maze_view.maze.color_lines_hor
-        x, y = self.maze_view.robot
-        inc = 5
-        if action == 'W' and self.maze_view.maze.color_lines_ver[y, x] != 0:
-            self.maze_view.maze.color_lines_ver[y, x] += inc
-        elif action == 'E' and self.maze_view.maze.color_lines_ver[y, x+1] != 0:
-            self.maze_view.maze.color_lines_ver[y, x+1] += inc
-        elif action == 'N' and self.maze_view.maze.color_lines_hor[y, x] != 0:
-            self.maze_view.maze.color_lines_hor[y, x] += inc
-        elif action == 'S' and self.maze_view.maze.color_lines_hor[y+1, x] != 0:
-            self.maze_view.maze.color_lines_hor[y+1, x] += inc
 
         info = {}
 
