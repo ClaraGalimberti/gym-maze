@@ -27,6 +27,19 @@ register(
 )
 
 register(
+    id='maze-sample-7x7-v0',
+    entry_point='gym_maze.envs:MazeEnvSample7x7',
+    max_episode_steps=3000,
+)
+
+register(
+    id='maze-random-7x7-v0',
+    entry_point='gym_maze.envs:MazeEnvRandom7x7',
+    max_episode_steps=3000,
+    nondeterministic=True,
+)
+
+register(
     id='maze-sample-10x10-v0',
     entry_point='gym_maze.envs:MazeEnvSample10x10',
     max_episode_steps=10000,

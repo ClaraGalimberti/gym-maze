@@ -100,7 +100,7 @@ class MazeEnv(gym.Env):
         # Clara: Change color of wall
         # self.maze_view.maze.color_lines_hor
         x, y = self.maze_view.robot
-        inc = 2
+        inc = 5
         if action == 'W' and self.maze_view.maze.color_lines_ver[y, x] != 0:
             self.maze_view.maze.color_lines_ver[y, x] += inc
         elif action == 'E' and self.maze_view.maze.color_lines_ver[y, x+1] != 0:
@@ -162,6 +162,18 @@ class MazeEnvRandom5x5(MazeEnv):
 
     def __init__(self, enable_render=True):
         super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5), enable_render=enable_render)
+
+
+class MazeEnvSample7x7(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvSample7x7, self).__init__(maze_file="maze2d_7x7.npy", enable_render=enable_render)
+
+
+class MazeEnvRandom7x7(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom7x7, self).__init__(maze_size=(7, 7), enable_render=enable_render)
 
 
 class MazeEnvSample10x10(MazeEnv):
