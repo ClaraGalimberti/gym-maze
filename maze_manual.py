@@ -11,9 +11,12 @@ import gym_maze
 if __name__ == "__main__":
 
     # Initialize the "maze" environment
+    # env = gym.make("maze-sample-5x5-v0")
     env = gym.make("maze-sample-5x5-v1")
+    # env = gym.make("maze-sample-7x7-v0")
     # env = gym.make("maze-random-5x5-v0")
-    # env = gym.make("maze-random-5x5-loop-v0")
+    # env = gym.make("maze-random-7x7-v0")
+    # env = gym.make("maze-random-10x10-loop-v0")
 
     MAZE_SIZE = tuple((env.observation_space.high + np.ones(env.observation_space.shape)).astype(int))
     MAX_T = np.prod(MAZE_SIZE, dtype=int) * 100
