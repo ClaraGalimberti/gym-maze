@@ -27,6 +27,7 @@ if __name__ == "__main__":
     env.render()
     i = 0
     total_reward = 0
+    render_mode = "human"
     print("Starting game...")
     while i < MAX_T:
         while True:
@@ -35,15 +36,18 @@ if __name__ == "__main__":
                 break
 
         if action == 'solution':
-            print("Maze with walls...")
-            env.render(mode='solution')
-            time.sleep(2)
-            break
+            if render_mode == "human":
+                print("Maze with walls...")
+                render_mode = "solution"
+            else:
+                print("Maze without walls...")
+                render_mode = "human"
+            env.render(mode=render_mode)
         if not done and env.valid_action(action):  # execute the action
             obv, reward, done, _ = env.step(action)
             total_reward += reward
             print("Action: %s \t||\t Reward: %.4f" % (action, total_reward))
-            env.render(cost=total_reward)
+            env.render(mode=render_mode, cost=total_reward)
             i = i+1
             if done:
                 print("Finished after %f time steps with total reward = %.4f." % (i, total_reward))
@@ -57,7 +61,7 @@ if __name__ == "__main__":
             # Reset the environment
             obv, done = env.reset()
             total_reward = 0
-            env.render()
+            env.render(mode=render_mode)
 
     else:
         print("Timed out at %d with total reward = %f." % (i, total_reward))
