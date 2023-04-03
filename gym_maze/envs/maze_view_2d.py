@@ -280,7 +280,8 @@ class MazeView2D:
 
     def __draw_text(self, cost, colour=(0, 0, 150), transparency=235):
         # Clara: Text to show
-        text = ('Récompenses accumulées : %i' % cost)
+        # text = ('Récompenses accumulées : %i' % cost)
+        text = ('Pénalités accumulées : %i' % (-cost))
         self.text_surface[(20, 645)] = self.__my_font.render(text, False, (0, 0, 0))
 
     def __draw_entrance(self, colour=(0, 0, 150), transparency=235):

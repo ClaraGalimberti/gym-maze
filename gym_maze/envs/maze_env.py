@@ -42,7 +42,7 @@ class MazeEnv(gym.Env):
             raise AttributeError("One must supply either a maze_file path (str) or the maze_size (tuple of length 2)")
 
         self.maze_size = self.maze_view.maze_size
-        self.done_reward = 4 * self.maze_size[0] * self.maze_size[1]
+        self.done_reward = 0  # 4 * self.maze_size[0] * self.maze_size[1]
 
         # forward or backward in each dimension
         self.action_space = spaces.Discrete(2*len(self.maze_size))
