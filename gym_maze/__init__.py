@@ -46,6 +46,12 @@ register(
 )
 
 register(
+    id='maze-sample-10x10-loop-v0',
+    entry_point='gym_maze.envs:MazeEnvSample10x10loop',
+    max_episode_steps=10000,
+)
+
+register(
     id='maze-random-10x10-v0',
     entry_point='gym_maze.envs:MazeEnvRandom10x10',
     max_episode_steps=10000,

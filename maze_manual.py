@@ -10,13 +10,21 @@ import gym_maze
 
 if __name__ == "__main__":
 
+    # lang = 'fr'
+    # lang = 'en'
+    lang = 'it'
+    # lang = 'de'
+
+    # maze_choice = "maze-sample-5x5-v0"
+    # maze_choice = "maze-sample-5x5-v1"
+    # maze_choice = "maze-sample-7x7-v0"
+    maze_choice = "maze-sample-10x10-loop-v0"
+    # maze_choice = "maze-random-5x5-v0"
+    # maze_choice = "maze-random-7x7-v0"
+    # maze_choice = "maze-random-10x10-loop-v0"
+
     # Initialize the "maze" environment
-    # env = gym.make("maze-sample-5x5-v0")
-    # env = gym.make("maze-sample-5x5-v1")
-    # env = gym.make("maze-sample-7x7-v0")
-    # env = gym.make("maze-random-5x5-v0")
-    # env = gym.make("maze-random-7x7-v0")
-    env = gym.make("maze-random-10x10-loop-v0")
+    env = gym.make(maze_choice, lang=lang)
 
     MAZE_SIZE = tuple((env.observation_space.high + np.ones(env.observation_space.shape)).astype(int))
     MAX_T = np.prod(MAZE_SIZE, dtype=int) * 100
@@ -28,6 +36,8 @@ if __name__ == "__main__":
     i = 0
     total_reward = 0
     render_mode = "human"
+    value_function_show = False
+    wall_greyscale_show = False
     print("Starting game...")
     while i < MAX_T:
         while True:
@@ -43,6 +53,27 @@ if __name__ == "__main__":
                 print("Maze without walls...")
                 render_mode = "human"
             env.render(mode=render_mode)
+        if action == 'ValueFunction':
+            if not value_function_show:
+                value_function_show = True
+                print("Maze with value function...")
+                env.show_value_function('on')
+            else:
+                value_function_show = False
+                print("Maze without value function...")
+                env.show_value_function('off')
+            env.render(mode=render_mode)
+        if action == 'wall':
+            if not wall_greyscale_show:
+                wall_greyscale_show = True
+                print("Maze with grayscale walls...")
+                env.show_greyscale_wall('on')
+            else:
+                wall_greyscale_show = False
+                print("Maze without grayscale walls...")
+                env.show_greyscale_wall('off')
+            env.render(mode=render_mode)
+
         if not done and env.valid_action(action):  # execute the action
             obv, reward, done, _ = env.step(action)
             total_reward += reward

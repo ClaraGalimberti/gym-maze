@@ -13,7 +13,7 @@ class MazeEnv(gym.Env):
 
     ACTION = ["N", "S", "E", "W"]
 
-    def __init__(self, maze_file=None, maze_size=None, mode=None, enable_render=True):
+    def __init__(self, maze_file=None, maze_size=None, mode=None, enable_render=True, lang='en'):
 
         self.viewer = None
         self.enable_render = enable_render
@@ -22,7 +22,8 @@ class MazeEnv(gym.Env):
             self.maze_view = MazeView2D(maze_name="OpenAI Gym - Maze (%s)" % maze_file,
                                         maze_file_path=maze_file,
                                         screen_size=(640, 640), 
-                                        enable_render=enable_render)
+                                        enable_render=enable_render,
+                                        lang=lang)
         elif maze_size:
             if mode == "loop":
                 has_loops = True
@@ -37,7 +38,7 @@ class MazeEnv(gym.Env):
             self.maze_view = MazeView2D(maze_name="OpenAI Gym - Maze (%d x %d)" % maze_size,
                                         maze_size=maze_size, screen_size=(640, 640),
                                         has_loops=has_loops, num_portals=num_portals,
-                                        enable_render=enable_render)
+                                        enable_render=enable_render, lang=lang)
         else:
             raise AttributeError("One must supply either a maze_file path (str) or the maze_size (tuple of length 2)")
 
@@ -105,7 +106,8 @@ class MazeEnv(gym.Env):
             reward = self.done_reward
             done = True
             self.migrate_value_function()
-            self.maze_view.show_value_function(self.value_f)
+            # self.show_value_function('on')
+            # self.maze_view.show_value_function(self.value_f)
         else:
             reward = -1  # -0.1/(self.maze_size[0]*self.maze_size[1])
             done = False
@@ -145,126 +147,148 @@ class MazeEnv(gym.Env):
         self.value_f_tmp = self.value_f_tmp - num_step + self.done_reward
         self.value_f = np.fmax(self.value_f_tmp, self.value_f)
 
+    def show_value_function(self, mode):
+        if mode == "on":
+            self.maze_view.show_value_function(self.value_f)
+        elif mode == "off":
+            self.maze_view.hide_value_function()
+        else:
+            raise NotImplementedError("mode must be 'on' or 'off'")
+
+    def show_greyscale_wall(self, mode):
+        if mode == "on":
+            self.maze_view.show_greyscale_wall()
+        elif mode == "off":
+            self.maze_view.hide_greyscale_wall()
+        else:
+            raise NotImplementedError("mode must be 'on' or 'off'")
+
 
 class MazeEnvSample5x5(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample5x5, self).__init__(maze_file="maze2d_5x5.npy", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample5x5, self).__init__(maze_file="maze2d_5x5.npy", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvSample5x5loop(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample5x5loop, self).__init__(maze_file="maze2d_5x5loop.npy", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample5x5loop, self).__init__(maze_file="maze2d_5x5loop.npy", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom5x5(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5), enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5), enable_render=enable_render, lang=lang)
 
 
 class MazeEnvSample7x7(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample7x7, self).__init__(maze_file="maze2d_7x7.npy", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample7x7, self).__init__(maze_file="maze2d_7x7.npy", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom7x7(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom7x7, self).__init__(maze_size=(7, 7), enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom7x7, self).__init__(maze_size=(7, 7), enable_render=enable_render, lang=lang)
 
 
 class MazeEnvSample10x10(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample10x10, self).__init__(maze_file="maze2d_10x10.npy", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample10x10, self).__init__(maze_file="maze2d_10x10.npy", enable_render=enable_render, lang=lang)
+
+
+class MazeEnvSample10x10loop(MazeEnv):
+
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample10x10loop, self).__init__(maze_file="maze2d_10x10loop.npy", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom10x10(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom10x10, self).__init__(maze_size=(10, 10), enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom10x10, self).__init__(maze_size=(10, 10), enable_render=enable_render, lang=lang)
 
 
 class MazeEnvSample3x3(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample3x3, self).__init__(maze_file="maze2d_3x3.npy", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample3x3, self).__init__(maze_file="maze2d_3x3.npy", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom3x3(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom3x3, self).__init__(maze_size=(3, 3), enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom3x3, self).__init__(maze_size=(3, 3), enable_render=enable_render, lang=lang)
 
 
 class MazeEnvSample100x100(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample100x100, self).__init__(maze_file="maze2d_100x100.npy", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvSample100x100, self).__init__(maze_file="maze2d_100x100.npy", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom100x100(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom100x100, self).__init__(maze_size=(100, 100), enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom100x100, self).__init__(maze_size=(100, 100), enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom3x3Loop(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom3x3Loop, self).__init__(maze_size=(3, 3), mode="loop", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom3x3Loop, self).__init__(maze_size=(3, 3), mode="loop", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom5x5Loop(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom5x5Loop, self).__init__(maze_size=(5, 5), mode="loop", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom5x5Loop, self).__init__(maze_size=(5, 5), mode="loop", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom10x10Loop(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom10x10Loop, self).__init__(maze_size=(10, 10), mode="loop", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom10x10Loop, self).__init__(maze_size=(10, 10), mode="loop", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom20x20Loop(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom20x20Loop, self).__init__(maze_size=(20, 20), mode="loop", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom20x20Loop, self).__init__(maze_size=(20, 20), mode="loop", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom30x30Loop(MazeEnv):
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom30x30Loop, self).__init__(maze_size=(30, 30), mode="loop", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom30x30Loop, self).__init__(maze_size=(30, 30), mode="loop", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom3x3Plus(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom3x3Plus, self).__init__(maze_size=(3, 3), mode="plus", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom3x3Plus, self).__init__(maze_size=(3, 3), mode="plus", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom5x5Plus(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom5x5Plus, self).__init__(maze_size=(5, 5), mode="plus", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom5x5Plus, self).__init__(maze_size=(5, 5), mode="plus", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom10x10Plus(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom10x10Plus, self).__init__(maze_size=(10, 10), mode="plus", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom10x10Plus, self).__init__(maze_size=(10, 10), mode="plus", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom20x20Plus(MazeEnv):
 
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom20x20Plus, self).__init__(maze_size=(20, 20), mode="plus", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom20x20Plus, self).__init__(maze_size=(20, 20), mode="plus", enable_render=enable_render, lang=lang)
 
 
 class MazeEnvRandom30x30Plus(MazeEnv):
-    def __init__(self, enable_render=True):
-        super(MazeEnvRandom30x30Plus, self).__init__(maze_size=(30, 30), mode="plus", enable_render=enable_render)
+    def __init__(self, enable_render=True, lang='en'):
+        super(MazeEnvRandom30x30Plus, self).__init__(maze_size=(30, 30), mode="plus", enable_render=enable_render, lang=lang)

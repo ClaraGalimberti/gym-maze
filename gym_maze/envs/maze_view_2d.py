@@ -6,9 +6,16 @@ import os
 
 class MazeView2D:
 
+    STR_TOTAL_PENALTIES = {
+        'fr': 'Pénalités accumulées ',
+        'en': 'Penalty counter',
+        'it': 'Penalità accumulate',
+        'de': 'Gesammelte Strafen'
+    }
+
     def __init__(self, maze_name="Maze2D", maze_file_path=None,
                  maze_size=(30, 30), screen_size=(600, 600),
-                 has_loops=False, num_portals=0, enable_render=True):
+                 has_loops=False, num_portals=0, enable_render=True, lang='en'):
 
         # PyGame configurations
         pygame.init()
@@ -17,6 +24,7 @@ class MazeView2D:
         self.__game_over = False
         self.__enable_render = enable_render
         self.__my_font = pygame.font.SysFont('Monaco', 24)
+        self.__lang = lang
 
         # Load a maze
         if maze_file_path is None:
@@ -60,6 +68,8 @@ class MazeView2D:
             self.text_surface = {}
 
             # Clara: Set colors of walls
+            # Do not show them by default
+            self.__draw_greyscale_lines = False
             self.maze.color_walls()
 
             # show the maze
@@ -76,6 +86,9 @@ class MazeView2D:
 
             # show the goal
             self.__draw_goal()
+
+        # Text to show below
+        self.str_total_penalties = self.STR_TOTAL_PENALTIES[self.__lang]
 
     def update(self, mode="human", cost=None):
         try:
@@ -144,6 +157,10 @@ class MazeView2D:
                         action = 'S'
                     elif event.key == pygame.K_o:
                         action = 'solution'
+                    elif event.key == pygame.K_v:
+                        action = 'ValueFunction'
+                    elif event.key == pygame.K_w:
+                        action = 'wall'
                     elif event.key == pygame.K_RETURN:
                         action = 'enter'
                 return action
@@ -161,6 +178,15 @@ class MazeView2D:
                 v = ('%i' % v)
                 d = 639/self.maze_size[0]/2-14
                 self.text_surface[(j*self.CELL_H + d, i*self.CELL_W + d)] = self.__my_font.render(v, False, (c, c, c))
+
+    def hide_value_function(self):
+        self.text_surface = {}
+
+    def show_greyscale_wall(self):
+        self.__draw_greyscale_lines = True
+
+    def hide_greyscale_wall(self):
+        self.__draw_greyscale_lines = False
 
     def __controller_update(self):
         if not self.__game_over:
@@ -198,17 +224,31 @@ class MazeView2D:
         if self.__enable_render is False:
             return
 
-        # drawing the horizontal lines
-        for y in range(self.maze.MAZE_H + 1):
-            for x in range(self.maze.MAZE_W):
-                pygame.draw.line(self.maze_layer, (0, 0, 0, min(max(10, self.maze.color_lines_hor[y, x]), 255)),
-                                 (x*self.CELL_W, y*self.CELL_H), ((x+1)*self.CELL_W, y*self.CELL_H))
+        if self.__draw_greyscale_lines:
+            # drawing the horizontal lines
+            for y in range(self.maze.MAZE_H + 1):
+                for x in range(self.maze.MAZE_W):
+                    pygame.draw.line(self.maze_layer, (0, 0, 0, min(max(10, self.maze.color_lines_hor[y, x]), 255)),
+                                     (x*self.CELL_W, y*self.CELL_H), ((x+1)*self.CELL_W, y*self.CELL_H))
 
-        # drawing the vertical lines
-        for x in range(self.maze.MAZE_W + 1):
-            for y in range(self.maze.MAZE_H):
-                pygame.draw.line(self.maze_layer, (0, 0, 0, min(max(10, self.maze.color_lines_ver[y, x]), 255)),
-                                 (x*self.CELL_W, y*self.CELL_H), (x*self.CELL_W, (y+1)*self.CELL_H))
+            # drawing the vertical lines
+            for x in range(self.maze.MAZE_W + 1):
+                for y in range(self.maze.MAZE_H):
+                    pygame.draw.line(self.maze_layer, (0, 0, 0, min(max(10, self.maze.color_lines_ver[y, x]), 255)),
+                                     (x*self.CELL_W, y*self.CELL_H), (x*self.CELL_W, (y+1)*self.CELL_H))
+
+        else:
+            # drawing the horizontal lines
+            for y in range(self.maze.MAZE_H + 1):
+                for x in range(self.maze.MAZE_W):
+                    pygame.draw.line(self.maze_layer, (0, 0, 0, 10),
+                                     (x * self.CELL_W, y * self.CELL_H), ((x + 1) * self.CELL_W, y * self.CELL_H))
+
+            # drawing the vertical lines
+            for x in range(self.maze.MAZE_W + 1):
+                for y in range(self.maze.MAZE_H):
+                    pygame.draw.line(self.maze_layer, (0, 0, 0, 10),
+                                     (x * self.CELL_W, y * self.CELL_H), (x * self.CELL_W, (y + 1) * self.CELL_H))
 
     def __draw_maze(self):
         
@@ -281,7 +321,7 @@ class MazeView2D:
     def __draw_text(self, cost, colour=(0, 0, 150), transparency=235):
         # Clara: Text to show
         # text = ('Récompenses accumulées : %i' % cost)
-        text = ('Pénalités accumulées : %i' % (-cost))
+        text = ('%s: %i' % (self.str_total_penalties, -cost))
         self.text_surface[(20, 645)] = self.__my_font.render(text, False, (0, 0, 0))
 
     def __draw_entrance(self, colour=(0, 0, 150), transparency=235):
