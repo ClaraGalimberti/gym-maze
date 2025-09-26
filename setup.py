@@ -11,7 +11,8 @@ setup(name="gym_maze",
       },
       install_requires=['gym==0.15.7',
                         'pygame',
-                        'numpy']
+                        'numpy',
+                        'pillow']
       )
 
 # If pygame is not installing, run: brew install sdl sdl_image sdl_mixer sdl_ttf portmidi
