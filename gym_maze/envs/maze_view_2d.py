@@ -206,7 +206,7 @@ class MazeView2D:
             if cost is not None:
                 self.__draw_text(cost)
 
-            if mode == 'solution':
+            if mode == 'solution' or mode == 'rgb_array':
                 self.__draw_maze()
 
             # update the screen
@@ -215,7 +215,7 @@ class MazeView2D:
             for pos, text in self.text_surface.items():
                 self.screen.blit(text, pos)
 
-            if mode == "human" or mode == 'solution':
+            if mode == "human" or mode == 'solution': #TODO ? or mode == 'rgb_array' Que hace esta linea????
                 pygame.display.flip()
 
             return np.flipud(np.rot90(pygame.surfarray.array3d(pygame.display.get_surface())))

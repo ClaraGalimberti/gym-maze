@@ -1,4 +1,6 @@
 import numpy as np
+from PIL import Image
+import os
 
 import gym
 from gym import error, spaces, utils
@@ -69,6 +71,12 @@ class MazeEnv(gym.Env):
         self.value_f[:] = np.nan
         self.value_f_tmp = np.empty(self.maze_size)
         self.value_f_tmp[:] = np.nan
+
+        # Folder for saving screenshots and gif of the value function
+        self.figs_folder = 'figs'
+        os.makedirs(self.figs_folder, exist_ok=True)
+        self.gif_folder = 'gif'
+        os.makedirs(self.gif_folder, exist_ok=True)
 
     def __del__(self):
         if self.enable_render is True:
@@ -162,6 +170,83 @@ class MazeEnv(gym.Env):
             self.maze_view.hide_greyscale_wall()
         else:
             raise NotImplementedError("mode must be 'on' or 'off'")
+
+    def save_screenshot(self, filename="maze_snapshot.png", show_value_function=True, dpi=300):
+        """
+        Save a snapshot of the maze as an image (PNG).
+
+        Args:
+            filename (str): Output image filename.
+            show_value_function (bool): Whether to overlay the value function.
+            dpi (int): Resolution in DPI (applies to PDF or when explicitly set).
+        """
+
+        # Configure visualization according to flags
+        if show_value_function:
+            self.show_value_function("on")
+        else:
+            self.show_value_function("off")
+
+        # Render current maze as RGB array
+        img_array = self.render(mode="rgb_array")
+        img = Image.fromarray(img_array)
+
+        # Save
+        filepath = os.path.join(self.figs_folder, filename)
+        ext = os.path.splitext(filename)[1].lower()
+        if ext == ".pdf":
+            img.save(filepath, "PDF", resolution=dpi)
+        else:
+            img.save(filepath)
+        print(f"Maze snapshot saved to {filepath}")
+
+    def generate_gif(self, delay=500, last_delay=2000):
+        """
+        Generate a GIF from maze snapshots using Pillow.
+
+        Args:
+            delay (int): Delay between frames in milliseconds.
+            last_delay (int): Extra delay for the last frame in milliseconds.
+        """
+        print("Generating value function gif...")
+
+        # Get sorted list of images in figs_folder
+        files = sorted(f for f in os.listdir(self.figs_folder) if f.startswith("maze") and f.endswith(".png"))
+
+        if not files:
+            print("No PNG files found to create GIF.")
+            return
+
+        # Open all images
+        frames = []
+        for fig in files:
+            fig_path = os.path.join(self.figs_folder, fig)
+            frames.append(Image.open(fig_path))
+
+        # Durations: same delay for all except last one
+        durations = [delay] * (len(frames) - 1) + [last_delay]
+
+        # Save GIF
+        filename_gif = os.path.join(self.gif_folder, "gif_maze.gif")
+        frames[0].save(
+            filename_gif,
+            save_all=True,
+            append_images=frames[1:],
+            duration=durations,
+            loop=0,
+        )
+
+        print(f"Gif saved at {filename_gif}")
+
+        # Close and cleanup
+        for img in frames:
+            img.close()
+
+        # Delete original PNGs
+        for fig in files:
+            fig_path = os.path.join(self.figs_folder, fig)
+            #os.remove(fig_path) # TODO: uncomment this line!
+        print("[TODO uncomment!]] Deleted source PNG figures.")
 
 
 class MazeEnvSample5x5(MazeEnv):

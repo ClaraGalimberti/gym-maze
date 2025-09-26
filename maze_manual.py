@@ -38,6 +38,9 @@ if __name__ == "__main__":
     render_mode = "human"
     value_function_show = False
     wall_greyscale_show = False
+    attempt_counter = 0
+    env.save_screenshot("maze%03d.png" % attempt_counter, show_value_function=True)
+    attempt_counter += 1
     print("Starting game...")
     while i < MAX_T:
         while True:
@@ -81,10 +84,14 @@ if __name__ == "__main__":
             env.render(mode=render_mode, cost=total_reward)
             i = i+1
             if done:
+                filename = "maze%03d.png" % attempt_counter
+                attempt_counter += 1
+                env.save_screenshot(filename, show_value_function=True)
                 print("Finished after %f time steps with total reward = %.4f." % (i, total_reward))
                 print("Press enter to continue...")
 
         if env.is_game_over():
+            env.generate_gif()
             print("Game over! \nBye :)")
             break
 
