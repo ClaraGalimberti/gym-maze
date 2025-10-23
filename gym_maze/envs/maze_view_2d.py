@@ -176,6 +176,8 @@ class MazeView2D:
                 c = 255 - (v-v_min)/(v_max-v_min) * 255
                 c = min(max(0, c), 254)
                 v = ('%i' % v)
+                # Hardcoding the color:
+                c = 0
                 d = 639/self.maze_size[0]/2-14
                 self.text_surface[(j*self.CELL_H + d, i*self.CELL_W + d)] = self.__my_font.render(v, False, (c, c, c))
 
