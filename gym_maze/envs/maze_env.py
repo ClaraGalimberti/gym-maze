@@ -127,7 +127,7 @@ class MazeEnv(gym.Env):
     def reset(self):
         self.maze_view.reset_robot()
         self.maze_view.reset_values_f()
-        self.state = np.zeros(2, dtype=int)
+        self.state = self.maze_view.robot
         self.value_f_tmp = np.empty(self.maze_size)
         self.value_f_tmp[:] = np.nan
         self.value_f_tmp[self.state[0], self.state[1]] = 0
