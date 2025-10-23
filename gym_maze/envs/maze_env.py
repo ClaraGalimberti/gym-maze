@@ -171,7 +171,7 @@ class MazeEnv(gym.Env):
         else:
             raise NotImplementedError("mode must be 'on' or 'off'")
 
-    def save_screenshot(self, filename="maze_snapshot.png", show_value_function=True, dpi=300):
+    def save_screenshot(self, filename="maze_snapshot.png", show_value_function=True, dpi=300, delete_previous=False):
         """
         Save a snapshot of the maze as an image (PNG).
 
@@ -179,7 +179,15 @@ class MazeEnv(gym.Env):
             filename (str): Output image filename.
             show_value_function (bool): Whether to overlay the value function.
             dpi (int): Resolution in DPI (applies to PDF or when explicitly set).
+            delete_previous (bool): Whether to delete the previous snapshots.
         """
+
+        # Delete previous png figs if needed:
+        if delete_previous:
+            files = sorted(f for f in os.listdir(self.figs_folder) if f.startswith("maze") and f.endswith(".png"))
+            for fig in files:
+                fig_path = os.path.join(self.figs_folder, fig)
+                os.remove(fig_path)
 
         # Configure visualization according to flags
         if show_value_function:

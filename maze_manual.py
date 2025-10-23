@@ -3,6 +3,7 @@ import time
 import numpy as np
 import math
 import random
+import argparse
 
 import gym
 import gym_maze
@@ -10,10 +11,26 @@ import gym_maze
 
 if __name__ == "__main__":
 
-    # lang = 'fr'
-    # lang = 'en'
-    lang = 'it'
-    # lang = 'de'
+    # Argument parser
+    parser = argparse.ArgumentParser(description="Maze environment language and configuration.")
+    parser.add_argument(
+        "--lang",
+        type=str,
+        default="it",
+        choices=["en", "fr", "it", "de"],
+        help="Language selection (default: 'it')."
+    )
+    # parser.add_argument(
+    #     "--maze",
+    #     type=str,
+    #     default="maze-sample-10x10-loop-v0",
+    #     help="Maze environment name (default: 'maze-sample-10x10-loop-v0')."
+    # )
+
+    args = parser.parse_args()
+
+    lang = args.lang
+    # maze_choice = args.maze
 
     # maze_choice = "maze-sample-5x5-v0"
     # maze_choice = "maze-sample-5x5-v1"
@@ -39,7 +56,7 @@ if __name__ == "__main__":
     value_function_show = False
     wall_greyscale_show = False
     attempt_counter = 0
-    env.save_screenshot("maze%03d.png" % attempt_counter, show_value_function=True)
+    env.save_screenshot("maze%03d.png" % attempt_counter, show_value_function=True, delete_previous=True)
     attempt_counter += 1
     print("Starting game...")
     while i < MAX_T:
