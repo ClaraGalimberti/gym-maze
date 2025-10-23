@@ -82,7 +82,7 @@ class MazeView2D:
             self.__draw_robot()
 
             # show the entrance
-            self.__draw_entrance()
+            # self.__draw_entrance()
 
             # show the goal
             self.__draw_goal()
@@ -130,7 +130,10 @@ class MazeView2D:
     def reset_robot(self):
 
         self.__draw_robot(transparency=0)
-        self.__robot = np.zeros(2, dtype=int)
+        self.__robot = np.zeros(2, dtype=int) #acaaa
+        self.__robot = np.array([np.random.randint(self.maze_size[0]), np.random.randint(self.maze_size[1])])
+        if self.__robot[0] == self.maze_size[0] and self.__robot[1] == self.maze_size[1]:
+            self.__robot = np.zeros(2, dtype=int)
         self.__draw_robot(transparency=255)
 
     def reset_values_f(self):
@@ -175,7 +178,7 @@ class MazeView2D:
                 v_max = np.nanmax(value_f)
                 c = 255 - (v-v_min)/(v_max-v_min) * 255
                 c = min(max(0, c), 254)
-                v = ('%i' % v)
+                v = ('%i' % (v+100))
                 # Hardcoding the color:
                 c = 0
                 d = 639/self.maze_size[0]/2-14
@@ -201,7 +204,7 @@ class MazeView2D:
         if not self.__game_over:
             # update the robot's position
             self.__draw_maze2()
-            self.__draw_entrance()
+            # self.__draw_entrance()
             self.__draw_goal()
             self.__draw_portals()
             self.__draw_robot()
