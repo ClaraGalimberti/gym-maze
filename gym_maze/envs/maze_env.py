@@ -113,7 +113,9 @@ class MazeEnv(gym.Env):
         if np.array_equal(self.maze_view.robot, self.maze_view.goal):
             reward = self.done_reward
             done = True
-            self.migrate_value_function()
+            # self.show_value_function(mode='on', tmp=True)
+            # TODO: This migration should be done once enter is pressed (or maybe we need to ask to press enter twice?)
+            # self.migrate_value_function()
             # self.show_value_function('on')
             # self.maze_view.show_value_function(self.value_f)
         else:
@@ -126,7 +128,11 @@ class MazeEnv(gym.Env):
 
     def reset(self):
         self.maze_view.reset_robot()
+        # Delete shown values of the V function
         self.maze_view.reset_values_f()
+        # TODO: Since I'm resetting the values of V to be shown,
+        #   I should put in False the variables value_function_show and value_function_tmp_show
+        # These variables should be attributes of env and not in the main!
         self.state = self.maze_view.robot
         self.value_f_tmp = np.empty(self.maze_size)
         self.value_f_tmp[:] = np.nan
@@ -160,6 +166,15 @@ class MazeEnv(gym.Env):
             self.maze_view.show_value_function(self.value_f)
         elif mode == "off":
             self.maze_view.hide_value_function()
+        else:
+            raise NotImplementedError("mode must be 'on' or 'off'")
+
+    def show_value_function_tmp(self, mode):
+        if mode == "on":
+            num_step = np.nanmax(self.value_f_tmp)
+            self.maze_view.show_value_function_tmp(self.value_f_tmp - num_step)
+        elif mode == "off":
+            self.maze_view.hide_value_function_tmp()
         else:
             raise NotImplementedError("mode must be 'on' or 'off'")
 

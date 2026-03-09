@@ -24,6 +24,7 @@ class MazeView2D:
         self.__game_over = False
         self.__enable_render = enable_render
         self.__my_font = pygame.font.SysFont('Monaco', 24)
+        self.__my_font_2 = pygame.font.SysFont('Monaco', 16)
         self.__lang = lang
 
         # Load a maze
@@ -66,6 +67,7 @@ class MazeView2D:
 
             # Clara: Create a layer for the maze
             self.text_surface = {}
+            self.text_surface_tmp = {}
 
             # Clara: Set colors of walls
             # Do not show them by default
@@ -138,6 +140,7 @@ class MazeView2D:
 
     def reset_values_f(self):
         self.text_surface = {}
+        self.text_surface_tmp = {}
 
     def get_input_key(self):
         action = None
@@ -162,13 +165,21 @@ class MazeView2D:
                         action = 'solution'
                     elif event.key == pygame.K_v:
                         action = 'ValueFunction'
+                    elif event.key == pygame.K_t:
+                        action = 'ValueFunctionTmp'
                     elif event.key == pygame.K_w:
                         action = 'wall'
                     elif event.key == pygame.K_RETURN:
                         action = 'enter'
                 return action
 
-    def show_value_function(self, value_f):
+    def show_value_function(self, value_f, color=None):
+        if color == "tab:blue":
+            color_rgb = (31, 119, 180)
+        elif color == "tab:orange":
+            color_rgb = (255, 127, 14)
+        else:
+            color_rgb = (0, 0, 0)
         for i in range(value_f.shape[0]):
             for j in range(value_f.shape[1]):
                 v = value_f[j,i]
@@ -176,16 +187,34 @@ class MazeView2D:
                     continue
                 v_min = np.nanmin(value_f)
                 v_max = np.nanmax(value_f)
-                c = 255 - (v-v_min)/(v_max-v_min) * 255
-                c = min(max(0, c), 254)
+                if color == "gradient":
+                    c = 255 - (v-v_min)/(v_max-v_min) * 255
+                    c = min(max(0, c), 254)
+                    color_rgb = (c, c, c)
                 v = ('%i' % (v+100))
-                # Hardcoding the color:
-                c = 0
-                d = 639/self.maze_size[0]/2-14
-                self.text_surface[(j*self.CELL_H + d, i*self.CELL_W + d)] = self.__my_font.render(v, False, (c, c, c))
+                d = 639 / self.maze_size[0] / 2 - 14
+                self.text_surface[(j*self.CELL_H + d, i*self.CELL_W + d)] = self.__my_font.render(v, False, color_rgb)
+
+    def show_value_function_tmp(self, value_f):
+        color_rgb = (31, 119, 180)  # tab:blue
+        # color_rgb = (255, 127, 14)  #tab:orange
+
+        for i in range(value_f.shape[0]):
+            for j in range(value_f.shape[1]):
+                v = value_f[j,i]
+                if np.isnan(v):
+                    continue
+                v_min = np.nanmin(value_f)
+                v_max = np.nanmax(value_f)
+                v = ('%i' % (v+100))
+                d = 639 / self.maze_size[0] / 2 - 28
+                self.text_surface_tmp[(j * self.CELL_H + d, i * self.CELL_W + d)] = self.__my_font_2.render(v, False, color_rgb)
 
     def hide_value_function(self):
         self.text_surface = {}
+
+    def hide_value_function_tmp(self):
+        self.text_surface_tmp = {}
 
     def show_greyscale_wall(self):
         self.__draw_greyscale_lines = True
@@ -218,6 +247,8 @@ class MazeView2D:
             self.screen.blit(self.background, (0, 0))
             self.screen.blit(self.maze_layer, (0, 0))
             for pos, text in self.text_surface.items():
+                self.screen.blit(text, pos)
+            for pos, text in self.text_surface_tmp.items():
                 self.screen.blit(text, pos)
 
             if mode == "human" or mode == 'solution': #TODO ? or mode == 'rgb_array' Que hace esta linea????

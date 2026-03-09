@@ -54,6 +54,7 @@ if __name__ == "__main__":
     total_reward = 0
     render_mode = "human"
     value_function_show = False
+    value_function_tmp_show = False
     wall_greyscale_show = False
     attempt_counter = 0
     env.save_screenshot("maze%03d.png" % attempt_counter, show_value_function=True, delete_previous=True)
@@ -83,6 +84,16 @@ if __name__ == "__main__":
                 print("Maze without value function...")
                 env.show_value_function('off')
             env.render(mode=render_mode)
+        if action == 'ValueFunctionTmp' and done:
+            if not value_function_tmp_show:
+                value_function_tmp_show = True
+                print("Maze with tmp value function...")
+                env.show_value_function_tmp('on')
+            else:
+                value_function_tmp_show = False
+                print("Maze without tmp value function...")
+                env.show_value_function_tmp('off')
+            env.render(mode=render_mode)
         if action == 'wall':
             if not wall_greyscale_show:
                 wall_greyscale_show = True
@@ -101,9 +112,6 @@ if __name__ == "__main__":
             env.render(mode=render_mode, cost=total_reward)
             i = i+1
             if done:
-                filename = "maze%03d.png" % attempt_counter
-                attempt_counter += 1
-                env.save_screenshot(filename, show_value_function=True)
                 print("Finished after %f time steps with total reward = %.4f." % (i, total_reward))
                 print("Press enter to continue...")
 
@@ -113,9 +121,18 @@ if __name__ == "__main__":
             break
 
         if done and action == 'enter':
+            env.migrate_value_function()
+            filename = "maze%03d.png" % attempt_counter
+            attempt_counter += 1
+            if not value_function_show:
+                env.show_value_function('on')
+            env.save_screenshot(filename)  # , show_value_function=True)
+            if not value_function_show:
+                env.show_value_function('off')
             # Reset the environment
             obv, done = env.reset()
             total_reward = 0
+            value_function_tmp_show = False
             env.render(mode=render_mode)
 
     else:
