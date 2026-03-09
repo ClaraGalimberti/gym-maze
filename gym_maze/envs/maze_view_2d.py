@@ -70,6 +70,7 @@ class MazeView2D:
             # Clara: Set colors of walls
             # Do not show them by default
             self.__draw_greyscale_lines = False
+            self.__draw_local_walls_flag = False
             self.maze.color_walls()
 
             # show the maze
@@ -164,6 +165,8 @@ class MazeView2D:
                         action = 'ValueFunction'
                     elif event.key == pygame.K_w:
                         action = 'wall'
+                    elif event.key == pygame.K_l:
+                        action = 'localwall'
                     elif event.key == pygame.K_RETURN:
                         action = 'enter'
                 return action
@@ -193,6 +196,12 @@ class MazeView2D:
     def hide_greyscale_wall(self):
         self.__draw_greyscale_lines = False
 
+    def show_local_walls(self):
+        self.__draw_local_walls_flag = True
+
+    def hide_local_walls(self):
+        self.__draw_local_walls_flag = False
+
     def __controller_update(self):
         if not self.__game_over:
             for event in pygame.event.get():
@@ -202,12 +211,16 @@ class MazeView2D:
 
     def __view_update(self, mode="human", cost=None):
         if not self.__game_over:
+            # Clear the maze layer each frame so drawings don't accumulate (important for deleting local walls)
+            self.maze_layer.fill((0, 0, 0, 0))
             # update the robot's position
             self.__draw_maze2()
             # self.__draw_entrance()
             self.__draw_goal()
             self.__draw_portals()
             self.__draw_robot()
+            if self.__draw_local_walls_flag:
+                self.__draw_local_walls()
             if cost is not None:
                 self.__draw_text(cost)
 
@@ -254,6 +267,28 @@ class MazeView2D:
                 for y in range(self.maze.MAZE_H):
                     pygame.draw.line(self.maze_layer, (0, 0, 0, 10),
                                      (x * self.CELL_W, y * self.CELL_H), (x * self.CELL_W, (y + 1) * self.CELL_H))
+
+    def __draw_local_walls(self, colour=(255, 140, 0, 220), thickness=3):
+        """Highlight walls (closed borders) of the robot's current cell in orange."""
+        if self.__enable_render is False:
+            return
+
+        x, y = int(self.__robot[0]), int(self.__robot[1])
+
+        dx = x * self.CELL_W
+        dy = y * self.CELL_H
+
+        # Use is_open() which checks both the current cell AND the neighbour cell,
+        # mirroring exactly how movement is validated.
+        # If NOT open -> wall exists -> draw it.
+        for dir, (line_start, line_end) in {
+            "N": ((dx,              dy),              (dx + self.CELL_W, dy)),
+            "S": ((dx,              dy + self.CELL_H),(dx + self.CELL_W, dy + self.CELL_H)),
+            "W": ((dx,              dy),              (dx,               dy + self.CELL_H)),
+            "E": ((dx + self.CELL_W,dy),              (dx + self.CELL_W, dy + self.CELL_H)),
+        }.items():
+            if not self.maze.is_open((x, y), dir):
+                pygame.draw.line(self.maze_layer, colour, line_start, line_end, thickness)
 
     def __draw_maze(self):
         

@@ -25,6 +25,7 @@ python maze_manual.py [--lang {en,fr,it,de}]
 
 - Navigate the maze using the arrow keys.
 - Show/hide the walls with `o` key. 
+- Show/hide the **local** walls with `l` key. 
 - Show/hide the latest value function approximation with `v` key.
 - Show/hide the greish walls with `w` key (if `o` option is not active).
 

@@ -171,6 +171,14 @@ class MazeEnv(gym.Env):
         else:
             raise NotImplementedError("mode must be 'on' or 'off'")
 
+    def show_local_wall(self, mode):
+        if mode == "on":
+            self.maze_view.show_local_walls()
+        elif mode == "off":
+            self.maze_view.hide_local_walls()
+        else:
+            raise NotImplementedError("mode must be 'on' or 'off'")
+
     def save_screenshot(self, filename="maze_snapshot.png", show_value_function=True, dpi=300, delete_previous=False):
         """
         Save a snapshot of the maze as an image (PNG).

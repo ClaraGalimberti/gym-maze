@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lang",
         type=str,
-        default="it",
+        default="fr",
         choices=["en", "fr", "it", "de"],
         help="Language selection (default: 'it')."
     )
@@ -55,6 +55,7 @@ if __name__ == "__main__":
     render_mode = "human"
     value_function_show = False
     wall_greyscale_show = False
+    local_wall_show = False
     attempt_counter = 0
     env.save_screenshot("maze%03d.png" % attempt_counter, show_value_function=True, delete_previous=True)
     attempt_counter += 1
@@ -92,6 +93,16 @@ if __name__ == "__main__":
                 wall_greyscale_show = False
                 print("Maze without grayscale walls...")
                 env.show_greyscale_wall('off')
+            env.render(mode=render_mode)
+        if action == 'localwall':
+            if not local_wall_show:
+                local_wall_show = True
+                print("Showing local walls...")
+                env.show_local_wall('on')
+            else:
+                local_wall_show = False
+                print("Hiding local walls...")
+                env.show_local_wall('off')
             env.render(mode=render_mode)
 
         if not done and env.valid_action(action):  # execute the action
